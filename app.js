@@ -2,13 +2,14 @@
 const API_URL = "https://www.googleapis.com/youtube/v3/search";
 const PLACEHOLDER_KEY = "여기에_발급받은_키";
 
-const searchForm = document.getElementById("searchForm");
-const searchInput = document.getElementById("searchInput");
+const categoryButtons = document.querySelectorAll(".category");
 const orderSelect = document.getElementById("orderSelect");
-const inputHint = document.getElementById("inputHint");
 const statusEl = document.getElementById("status");
 const resultsEl = document.getElementById("results");
 const emptyStateEl = document.getElementById("emptyState");
+
+// 지금 선택된 분야의 검색어 (아직 안 골랐으면 빈 문자열)
+let currentQuery = "";
 
 // 요청 주소 만들기 (검색어는 자동으로 인코딩된다)
 function buildSearchUrl(query, order) {
@@ -156,19 +157,11 @@ function renderVideoCards(videos) {
   resultsEl.append(...cards);
 }
 
-// 검색 실행
+// 선택한 분야의 강의 불러오기
 async function search() {
-  const query = searchInput.value.trim();
+  const query = currentQuery;
   const order = orderSelect.value;
-
-  inputHint.textContent = "";
-  if (!query) {
-    resultsEl.replaceChildren();
-    showStatus("");
-    inputHint.textContent = "검색어를 입력해 주세요";
-    searchInput.focus();
-    return;
-  }
+  if (!query) return;
 
   const key = (CONFIG.YOUTUBE_API_KEY || "").trim();
   if (!key || key === PLACEHOLDER_KEY) {
@@ -187,10 +180,11 @@ async function search() {
   try {
     const videos = await fetchVideos(query, order);
     saveCachedResults(query, order, videos);
-    // 기다리는 사이 다른 검색이 시작됐다면 이 결과는 버린다
-    if (query !== searchInput.value.trim() || order !== orderSelect.value) return;
+    // 기다리는 사이 다른 분야나 정렬을 골랐다면 이 결과는 버린다
+    if (query !== currentQuery || order !== orderSelect.value) return;
     showResults(videos);
   } catch (err) {
+    if (query !== currentQuery || order !== orderSelect.value) return;
     showError(err.message);
   }
 }
@@ -205,20 +199,16 @@ function showResults(videos) {
   renderVideoCards(videos);
 }
 
-searchForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  search();
-});
-
-// 추천 검색어를 누르면 입력창에 넣고 바로 검색
-document.querySelectorAll(".chip").forEach((chip) => {
-  chip.addEventListener("click", () => {
-    searchInput.value = chip.textContent;
+// 분야 버튼을 누르면 선택 표시를 옮기고 바로 불러오기
+categoryButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    currentQuery = button.dataset.query;
+    categoryButtons.forEach((other) => {
+      other.setAttribute("aria-pressed", String(other === button));
+    });
     search();
   });
 });
 
-// 정렬을 바꾸면 검색어가 있을 때 바로 다시 검색
-orderSelect.addEventListener("change", () => {
-  if (searchInput.value.trim()) search();
-});
+// 정렬을 바꾸면 선택한 분야가 있을 때 바로 다시 불러오기
+orderSelect.addEventListener("change", search);

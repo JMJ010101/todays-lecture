@@ -69,96 +69,61 @@ body {
   padding: 16px;
 }
 
-/* 검색 폼 */
-.search-form {
+/* 분야 선택 */
+.categories {
   display: flex;
-  gap: 8px;
   flex-wrap: wrap;
+  gap: 10px;
 }
 
-.field {
-  flex: 1 1 240px;
-  min-width: 0;
-  position: relative;
-  display: block;
-}
-
-.field-icon {
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--ink-soft);
-  pointer-events: none;
-}
-
-.search-form input,
-.search-form select,
-.search-form button {
+.category {
   font: inherit;
-  color: var(--ink);
-  padding: 12px 16px;
-  border: 2px solid var(--ink);
-  border-radius: 10px;
-  background: var(--white);
-}
-
-.search-form input {
-  width: 100%;
-  padding-left: 44px;
-}
-
-.search-form button {
-  background: var(--ink);
-  color: var(--white);
   font-weight: 700;
+  padding: 10px 18px;
+  color: var(--ink);
+  background: var(--white);
+  border: 2px solid var(--ink);
+  border-radius: 999px;
   cursor: pointer;
-  padding-inline: 24px;
+  transition: transform 0.1s, box-shadow 0.1s;
 }
 
-.search-form button:hover { background: #2b3d6e; }
+.category:hover {
+  background: var(--marker);
+}
 
-.search-form input:focus-visible,
-.search-form select:focus-visible,
-.search-form button:focus-visible,
-.chip:focus-visible,
+.category[aria-pressed="true"] {
+  background: var(--ink);
+  color: var(--marker);
+  box-shadow: 3px 3px 0 var(--marker), 3px 3px 0 2px var(--ink);
+}
+
+.category:focus-visible,
+.toolbar select:focus-visible,
 .card:focus-visible {
   outline: 3px solid var(--marker);
   outline-offset: 2px;
   box-shadow: 0 0 0 5px var(--ink);
 }
 
-.input-hint {
-  min-height: 1.4em;
-  margin: 6px 2px 0;
-  color: var(--margin);
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-/* 추천 검색어 */
-.chips {
+/* 정렬 */
+.toolbar {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
   gap: 8px;
-  margin-top: 4px;
-}
-
-.chip {
-  font: inherit;
+  margin-top: 16px;
   font-size: 0.9rem;
-  padding: 5px 12px;
-  color: var(--ink);
-  background: var(--white);
-  border: 1.5px dashed var(--ink-soft);
-  border-radius: 999px;
-  cursor: pointer;
+  color: var(--ink-soft);
 }
 
-.chip:hover {
-  background: var(--marker);
-  border-style: solid;
-  border-color: var(--ink);
+.toolbar select {
+  font: inherit;
+  color: var(--ink);
+  padding: 6px 12px;
+  border: 2px solid var(--ink);
+  border-radius: 8px;
+  background: var(--white);
 }
 
 /* 상태 / 빈 화면 */
@@ -187,7 +152,7 @@ body {
 
 /* 카드 목록 */
 .grid {
-  margin-top: 20px;
+  margin-top: 16px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: 20px;
@@ -268,5 +233,5 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .card { transition: none; }
+  .card, .category { transition: none; }
 }

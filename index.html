@@ -20,36 +20,33 @@
     </div>
     <div>
       <h1><span class="marker">오늘의 강의</span></h1>
-      <p class="subtitle">오늘 공부할 개발 주제를 찾아보세요</p>
+      <p class="subtitle">오늘 공부할 개발 분야를 골라보세요</p>
     </div>
   </header>
 
   <main class="container">
-    <form id="searchForm" class="search-form" novalidate>
-      <label class="field">
-        <svg class="field-icon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
-          <circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/>
-        </svg>
-        <input id="searchInput" type="search" placeholder="무엇을 배우고 싶나요? 예: react 입문" autocomplete="off" aria-label="검색어">
-      </label>
-      <select id="orderSelect" aria-label="정렬">
+    <div id="categories" class="categories" role="group" aria-label="강의 분야">
+      <button type="button" class="category" data-query="react 입문 강의">React</button>
+      <button type="button" class="category" data-query="javascript 기초 강의">JavaScript</button>
+      <button type="button" class="category" data-query="typescript 입문 강의">TypeScript</button>
+      <button type="button" class="category" data-query="html css 웹 퍼블리싱 강의">HTML/CSS</button>
+      <button type="button" class="category" data-query="next.js 강의">Next.js</button>
+      <button type="button" class="category" data-query="node.js 백엔드 강의">Node.js</button>
+      <button type="button" class="category" data-query="python 기초 강의">Python</button>
+      <button type="button" class="category" data-query="git github 입문 강의">Git/GitHub</button>
+      <button type="button" class="category" data-query="코딩테스트 알고리즘 강의">알고리즘</button>
+    </div>
+
+    <div class="toolbar">
+      <label for="orderSelect">정렬</label>
+      <select id="orderSelect">
         <option value="relevance">관련도순</option>
         <option value="date">최신순</option>
       </select>
-      <button type="submit">검색</button>
-    </form>
-    <p id="inputHint" class="input-hint" role="alert"></p>
-
-    <div class="chips" aria-label="추천 검색어">
-      <button type="button" class="chip">react 입문</button>
-      <button type="button" class="chip">javascript 기초</button>
-      <button type="button" class="chip">typescript</button>
-      <button type="button" class="chip">css 레이아웃</button>
-      <button type="button" class="chip">git github</button>
     </div>
 
     <p id="status" class="status" role="status" aria-live="polite"></p>
-    <section id="results" class="grid" aria-label="검색 결과"></section>
+    <section id="results" class="grid" aria-label="강의 목록"></section>
 
     <div id="emptyState" class="empty-state">
       <svg viewBox="0 0 64 64" width="72" height="72" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -57,7 +54,7 @@
         <path d="M56 14c-8-3-16-3-24 2v34c8-5 16-5 24-2z"/>
         <path d="m40 26 9-9 4 4-9 9-5 1z" class="pencil"/>
       </svg>
-      <p>검색어를 입력하거나 추천 검색어를 눌러 보세요.</p>
+      <p>위에서 공부하고 싶은 분야를 골라보세요.</p>
     </div>
   </main>
 </body>
