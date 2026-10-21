@@ -1,0 +1,8 @@
+# 배포할 때마다 Netlify가 config.js를 새로 만든다.
+# 키는 Netlify 사이트 설정 > Environment variables 의 YOUTUBE_API_KEY 값을 쓴다.
+[build]
+  publish = "."
+  command = '''
+if [ -z "$YOUTUBE_API_KEY" ]; then echo "YOUTUBE_API_KEY 환경변수가 없어요. Netlify 사이트 설정에서 추가해 주세요."; exit 1; fi
+printf '// config.js : 배포 시 Netlify가 자동 생성\nconst CONFIG = {\n  YOUTUBE_API_KEY: "%s",\n  MAX_RESULTS: 24,\n};\n' "$YOUTUBE_API_KEY" > config.js
+'''

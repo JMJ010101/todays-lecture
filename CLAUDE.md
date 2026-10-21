@@ -22,11 +22,13 @@
 (현재 작업 폴더)/
 ├── index.html   # 화면 구조(HTML)만 작성
 ├── style.css    # 스타일
-├── config.js    # API 키 등 설정값
+├── config.js    # API 키 등 설정값 (로컬 전용, GitHub에 올리지 않음)
 ├── app.js       # API 호출, 데이터 가공, 화면 그리기
+├── netlify.toml # 배포 때 Netlify가 config.js를 만들도록 하는 빌드 설정
+├── .gitignore   # config.js를 Git에서 제외
 └── CLAUDE.md
 ```
-- 이 5개 파일 외에 다른 파일(폴더, 추가 JS/CSS)을 만들지 않는다. 더 필요하면 먼저 사용자에게 묻는다.
+- 이 7개 파일 외에 다른 파일(폴더, 추가 JS/CSS)을 만들지 않는다. 더 필요하면 먼저 사용자에게 묻는다.
 - `index.html`에서 연결 순서는 반드시 `config.js` → `app.js`다. (`app.js`가 `CONFIG`를 쓰기 때문)
   ```html
   <link rel="stylesheet" href="style.css">
@@ -56,7 +58,8 @@ const CONFIG = {
   - 제한을 건 키는 다른 사이트에서 도용해도 동작하지 않는다. 설정 화면의 메뉴 이름과 위치는 바뀔 수 있으니 구글 공식 안내를 따른다.
 - **제한을 걸지 않은 키는 GitHub에 커밋하지 않는다.** 한 번 커밋된 키는 파일을 고쳐도 커밋 기록에 남는다. 키가 노출됐다면 Cloud Console에서 키를 삭제하고 재발급한다.
 - 사용량 한도(쿼터)를 소진당할 수 있다는 점을 알고, Cloud Console에서 사용량을 가끔 확인한다.
-- Netlify 배포는 GitHub 저장소 내용으로 하므로, 배포 사이트가 동작하려면 `config.js`가 저장소에 올라가야 한다. 이 점 때문에 위의 키 제한이 필수다.
+- `config.js`는 `.gitignore`로 GitHub에서 제외한다. 배포 때는 `netlify.toml`의 빌드 명령이 Netlify의 환경변수 `YOUTUBE_API_KEY`로 `config.js`를 새로 만든다. 그래서 저장소에는 키가 남지 않는다.
+- 하지만 배포된 `config.js`는 여전히 누구나 내려받을 수 있다. 환경변수를 써도 키가 숨겨지는 것은 아니므로 위의 키 제한은 그대로 필수다.
 
 ## 사용하는 API
 | 용도 | 엔드포인트 |
@@ -108,14 +111,16 @@ const CONFIG = {
 - 반응형: 모바일(너비 360px)에서도 가로 스크롤 없이 보여야 한다. 카드는 CSS Grid로 화면 너비에 맞게 열 수가 바뀌게 한다. `<meta name="viewport">`를 넣는다.
 
 ## 배포 규칙 (Netlify)
-- 이 폴더의 최상위에 `index.html`이 있으면, 폴더 전체를 그대로 배포하면 된다. 별도 빌드 명령은 필요 없다.
+- 이 폴더의 최상위에 `index.html`이 있고, `netlify.toml`의 빌드 명령이 배포 때 `config.js`를 만든다.
+- Netlify 사이트 설정 > Environment variables에 `YOUTUBE_API_KEY`를 추가하고 값에 키를 넣는다. 없으면 빌드가 실패한다.
+- 환경변수를 바꾼 뒤에는 다시 배포(Trigger deploy)해야 반영된다.
 - 폴더/파일 이름의 대소문자를 구분하는 환경이므로 `index.html`, `style.css`, `config.js`, `app.js`는 항상 소문자로 쓰고, HTML에서 연결할 때도 똑같이 쓴다.
 - 배포 전 키 제한에 Netlify 주소가 등록돼 있는지 확인한다.
 
 ## Git 규칙
 - 이 폴더가 Git 저장소의 최상위다. 하위 폴더에 `.git` 폴더를 만들지 않는다 (GitHub에서 폴더가 404로 뜨는 원인이 된다).
 - 다른 Git 저장소 폴더 안쪽에 이 폴더를 만들지 않는다.
-- `config.js`를 커밋하기 전에 키에 제한이 걸려 있는지 사용자에게 먼저 확인한다.
+- `config.js`는 `.gitignore`에 들어 있어 커밋되지 않는다. `git add -f`로 강제로 올리지 않는다.
 - 작업 전 `git pull origin main`으로 원격 변경 사항을 먼저 받는다.
 - 커밋 메시지는 한국어로 짧게 쓴다 (예: `영상 카드 추가`).
 - `git push --force`는 사용자가 명시적으로 요청할 때만 쓴다.
